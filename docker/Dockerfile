@@ -1,4 +1,4 @@
-FROM python:3-alpine3.7
+FROM python:3-alpine3.20
 ENV CFLAGS="-DSQLITE_DEFAULT_CACHE_SIZE=-8000 \
             -DSQLITE_DEFAULT_FOREIGN_KEYS=1 \
             -DSQLITE_DEFAULT_MEMSTATUS=0 \
@@ -38,11 +38,14 @@ RUN apk update \
       && make -j4 \
       && make install \
       && cd ../ \
-      && rm -rf ./sqlite/ ./sqlite.tar.gz \
+      && rm -rf ./sqlite/ ./sqlite.tar.gz 
+
+RUN pip install --no-cache-dir pipenv \
       && pip install --upgrade pip \
       && pip install --no-cache-dir cython \
       && pip install --no-cache-dir flask peewee sqlite-web \
       && apk del .build-deps
+      
 EXPOSE 8080
 VOLUME /data
 WORKDIR /data
